@@ -46,7 +46,8 @@ class Environment(Base):
             ("STEAMROLLER_NAME_PREFIX", "", "steamroller"),
             ("STEAMROLLER_SUBMIT_COMMAND", "", None),
             ("STEAMROLLER_SHELL", "", "#!/bin/bash"),
-            ListVariable("STEAMROLLER_NOOPS", help="Treat the specified build rules as no-ops/passthroughs.", default=[], names=list(builders.keys()))
+            ListVariable("STEAMROLLER_NOOPS", help="Treat the specified build rules as no-ops/passthroughs.", default=[], names=list(builders.keys())),
+            ("IMPLICIT_COMMAND_DEPENDENCIES", "", False)
         )
         tools = argd.pop("tools", [])
         
