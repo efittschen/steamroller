@@ -112,12 +112,18 @@ class GridEngine(ABC):
             raise Exception("No such file: '{}'".format(script))
         
         generator = self.create_generator(commands)
-
-        return Builder(
-            action=Action(
+        action = Action(
                 create_method(generator, chdir, self.submit_string),
                 self.create_command_printer(generator),
-            ),
+            )
+        def get_contents(target, source, env):
+            commands = generator(target, source, env, False)
+            action = Action(commands)
+            return action.get_contents(target, source, env)
+        action.gc = get_contents
+
+        return Builder(
+            action=action,
             emitter=self.create_emitter(script),
         )
     
