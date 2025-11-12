@@ -34,6 +34,7 @@ class SlurmEngine(GridEngine):
             "--parsable",
             "${'-D ' + STEAMROLLER_WORKING_DIRECTORY if STEAMROLLER_WORKING_DIRECTORY else ''}",
             "${'-A ' + STEAMROLLER_ACCOUNT if STEAMROLLER_ACCOUNT else ''}",
+            "${'--nodelist=' + ' '.join(STEAMROLLER_NODELIST) if len(STEAMROLLER_NODELIST) > 0 else ''}",
             "${'-t ' + STEAMROLLER_TIME if STEAMROLLER_TIME else ''}",
             "${'--mem=' + STEAMROLLER_MEMORY if STEAMROLLER_MEMORY else ''}",
             "${'-p ' + STEAMROLLER_QUEUE if STEAMROLLER_QUEUE else ''}",
