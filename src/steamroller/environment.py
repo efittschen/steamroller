@@ -41,6 +41,8 @@ class Environment(Base):
             ("STEAMROLLER_QUEUE", "", None),
             ("STEAMROLLER_ACCOUNT", "", None),
             ("STEAMROLLER_MEMORY", "", "8G"),
+            ("STEAMROLLER_NODELIST", "", []),
+            ("STEAMROLLER_EXCLUDE", "", ""),
             ("STEAMROLLER_TIME", "", "06:00:00"),
             ("STEAMROLLER_GPU_COUNT", "", 0),
             ("STEAMROLLER_NAME_PREFIX", "", "steamroller"),

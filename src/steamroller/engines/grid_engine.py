@@ -87,7 +87,7 @@ class GridEngine(ABC):
     """
 
     pseudo_id = 0
-    parameters = ["MEMORY", "TIME", "QUEUE", "ACCOUNT", "GPU_COUNT", "DEPENDENCIES", "LABEL_PREFIX", "WORKING_DIRECTORY", "NODELIST"]
+    parameters = ["MEMORY", "TIME", "QUEUE", "ACCOUNT", "GPU_COUNT", "DEPENDENCIES", "LABEL_PREFIX", "WORKING_DIRECTORY", "NODELIST", "EXCLUDE"]
     
     @classmethod
     def check_for_executable(cls, name: str) -> bool:
