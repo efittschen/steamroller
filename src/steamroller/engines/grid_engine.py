@@ -124,7 +124,7 @@ class GridEngine(ABC):
 
         return Builder(
             action=action,
-            emitter=self.create_emitter(script),
+            emitter=self.create_emitter(script, action.gc),
         )
     
     def create_name(self, target, source, env):
@@ -140,8 +140,20 @@ class GridEngine(ABC):
     def create_commands(self, commands):
         pass
     
-    def create_emitter(self, script, other_deps=[]):
+    def create_emitter(self, script, get_contents, other_deps=[]):
         def emitter(target, source, env):
+            content = get_contents(target, source, env)
+            content_hash = hashlib.md5()
+            content_hash.update(bytes(content, "utf-8"))
+            hash_str = content_hash.hexdigest()
+            hash_str = hash_str[:8]
+            new_targets = []
+            for t in target:
+                base, ext = os.path.splitext(t.get_abspath())
+                new_name = "{}_{}{}".format(base, hash_str, ext)
+                new_t = env.File(new_name)
+                new_targets.append(new_t)
+            target = new_targets
             [env.Depends(t, s) for t in target for s in other_deps + [script]]
             return (target, source)
         return emitter

@@ -33,6 +33,6 @@ class LocalEngine(GridEngine):
             #create_method(generator, chdir, self.submit_string),
             #    self.create_command_printer(generator),
             #),
-            emitter=self.create_emitter(script),
+            emitter=self.create_emitter(script, action.get_contents),
         )
         return builder
