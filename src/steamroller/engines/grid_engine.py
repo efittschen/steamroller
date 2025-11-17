@@ -144,9 +144,11 @@ class GridEngine(ABC):
         def emitter(target, source, env):
             content = get_contents(target, source, env)
             content_hash = hashlib.md5()
-            content_hash.update(bytes(content, "utf-8"))
+            content_hash.update(content)
             hash_str = content_hash.hexdigest()
             hash_str = hash_str[:8]
+
+            # rename targets to be command hash dependent
             new_targets = []
             for t in target:
                 base, ext = os.path.splitext(t.get_abspath())
@@ -154,6 +156,19 @@ class GridEngine(ABC):
                 new_t = env.File(new_name)
                 new_targets.append(new_t)
             target = new_targets
+
+            new_command = get_contents(target, source, env).decode()
+
+            # write command to a log file
+            for t in target:
+                base, ext = os.path.splitext(t.get_abspath())
+                log_name = "{}_{}.command".format(base, ext.lstrip("."))
+                os.makedirs(os.path.dirname(log_name), exist_ok=True)
+                # reformat for readability
+                command = new_command.replace(" --", "\n  --")
+                with open(log_name, "w") as f:
+                    f.write(command)
+            
             [env.Depends(t, s) for t in target for s in other_deps + [script]]
             return (target, source)
         return emitter
