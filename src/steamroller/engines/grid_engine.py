@@ -27,6 +27,12 @@ def create_name(target, source, env):
     m.update(bytes(" ".join([x.get_abspath() for x in target] + [x.get_abspath() for x in source]), "utf-8"))
     return "{}_{}".format(env["STEAMROLLER_NAME_PREFIX"], m.hexdigest())
 
+# check squeue --me for job names, and check if the current job name is present
+def job_exists(job_name: str) -> bool:
+    pid = subprocess.Popen(["squeue", "--me", "--name", job_name, "--noheader"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    stdout, stderr = pid.communicate()
+    return len(stdout.strip()) > 0
+
 def submit(
         submit_string,
         target,
@@ -153,7 +159,13 @@ class GridEngine(ABC):
             for t in target:
                 base, ext = os.path.splitext(t.get_abspath())
                 new_name = "{}_{}{}".format(base, hash_str, ext)
-                new_t = env.File(new_name)
+                # if t is File object, create new File object if its Dir create new Dir object
+                if isinstance(t, SCons.Node.FS.File):
+                    new_t = env.File(new_name)
+                elif isinstance(t, SCons.Node.FS.Dir):
+                    new_t = env.Dir(new_name)
+                else:
+                    raise Exception("Unknown target type: {}".format(type(t)))
                 new_targets.append(new_t)
             target = new_targets
 
